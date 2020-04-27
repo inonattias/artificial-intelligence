@@ -32,7 +32,7 @@ def main():
             print(create_graph_from_points(cord))
 
             tsp = TSProblem(create_graph_from_points(cord))
-            astar_search(tsp, primMST)
+            print(astar_search(tsp, display=True))
 
 
 if __name__ == '__main__':

@@ -22,8 +22,8 @@ def primMST(graph: Graph) -> float:
         X.add(edge[1])
         sum_of_MST += graph_dict.get(edge[0]).get(edge[1])
 
-    for edge in T:
-        print(str(edge))
+   # for edge in T:
+    #    print(str(edge))
 
     return sum_of_MST
 
