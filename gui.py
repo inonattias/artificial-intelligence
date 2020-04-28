@@ -13,8 +13,8 @@ def draw_graph(path: Tuple[Tuple[float, float]], labels: List[str]):
     width = 800
     height = 400
     margin = 3.0
-    y_label_margin = 7
-    label_margin = 9
+    y_label_margin = -5 * factor
+    label_margin = -4* factor
     graph_map = Canvas(root, width=width, height=height)
     graph_map.configure(scrollregion=(-400, -400, 200, 200))
 
@@ -32,7 +32,7 @@ def draw_graph(path: Tuple[Tuple[float, float]], labels: List[str]):
 
     for index, label in enumerate(labels):
         label_coord = adjusted_path[index][0] - margin, adjusted_path[index][1] + margin, adjusted_path[index][0] + margin, adjusted_path[index][1] - margin
-        graph_map.create_text(adjusted_path[index][0] + label_margin, adjusted_path[index][1] - y_label_margin, anchor=W, font="Purisa", text=label)
+        graph_map.create_text(adjusted_path[index][0]+ label_margin, adjusted_path[index][1] - y_label_margin, anchor=W, font="Purisa", text=label)
         graph_map.create_oval(label_coord, fill="green")
 
 
