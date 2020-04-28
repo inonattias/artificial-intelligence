@@ -1,4 +1,6 @@
 from typing import List, Tuple, Dict
+
+from gui import draw_graph
 from utils import distance
 import os
 import errno
@@ -38,23 +40,27 @@ def write_results_to_file(output_file_path: str, path: Tuple[str]):
                 raise
     with open(output_file_path, 'w+') as f:
         for node in path[:-1]:
-            f.write(node+'\n')
+            f.write(node + '\n')
 
 
 def main():
-    for index,input_file_file_path in enumerate(input_files_paths[:number_of_files_to_run]):
+    for index, input_file_file_path in enumerate(input_files_paths[:number_of_files_to_run]):
         with open(input_file_file_path, 'r') as input_file:
             cord: List[Tuple[float, float]] = []
             for line in input_file.readlines():
                 (x, y) = line.split()
                 cord.append((float(x), float(y)))
-            print(create_graph_from_points(cord))
+            g = create_graph_from_points(cord)
+            print(g)
 
-            tsp = TSProblem(create_graph_from_points(cord))
+            tsp = TSProblem(g)
             result_node: Node = astar_search(tsp, display=True)
             print(result_node.state)
             print(result_node.path())
             write_results_to_file(output_files_paths[index], result_node.state)
+
+            path = [cord[int(label)-1] for label in result_node.state[:-1]]
+            draw_graph(path, result_node.state[:-1])
 
 
 if __name__ == '__main__':
