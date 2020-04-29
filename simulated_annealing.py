@@ -7,11 +7,11 @@ import numpy as np
 max_iter = 5000
 
 
-def exp_schedule(t0=20, alpha=0.005, limit=100):
+def exp_schedule(t0=1e5, alpha=0.8, limit=10000):
     return lambda t: ((t0 * np.power(alpha, t)) if t < limit else 0)
 
 
-def simulated_annealing(problem: TSPAnnealingProblem, schedule=exp_schedule()):
+def simulated_annealing1(problem: TSPAnnealingProblem, schedule=exp_schedule()):
     current_state: Tuple[List[str], float] = problem.initial
     for t in range(max_iter):
         swapped: bool = False
@@ -27,6 +27,6 @@ def simulated_annealing(problem: TSPAnnealingProblem, schedule=exp_schedule()):
         if value_diff > 0.0 or probability(prob):
             current_state = next_state
             swapped = True
-        print("iteration: {iter}. Temp. = {T}. diff = {value_diff}. swapped= {swapped}. probability = {prob}".format
-              (iter=t, T=T, value_diff=value_diff, swapped=swapped, prob=prob))
+        print("iteration: {iter}. Temp. = {T}. diff = {value_diff}. swapped= {swapped}. probability = {prob}. tsp length: {length}".format
+              (iter=t, T=T, value_diff=value_diff, swapped=swapped, prob=prob, length=current_state[1]))
     return current_state
