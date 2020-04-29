@@ -2,7 +2,9 @@ import time
 
 from typing import List, Tuple, Dict
 
+from tspAnnealingProblem import TSPAnnealingProblem
 from gui import draw_graph
+from simulated_annealing import simulated_annealing
 from utils import distance
 import os
 import errno
@@ -12,7 +14,7 @@ from tsp import TSProblem, TSProblemMST, TSProblemSP, TSProblemShortestEdges, TS
 
 number_of_files_to_run = 1
 input_prefix = 'Input/'
-input_files_paths: List[str] = ['tsp15_xy.txt', 'tsp48_xy.txt', 'tsp131_xy.txt']
+input_files_paths: List[str] = ['1.txt', 'tsp15_xy.txt', 'tsp48_xy.txt', 'tsp131_xy.txt']
 input_files_paths = [input_prefix + s for s in input_files_paths]
 
 output_prefix = 'Output/'
@@ -76,13 +78,13 @@ def main():
             g = create_graph_from_points(cord)
             print(g)
             # res =a_star_for_tsp(TSProblemMSTp2(g), index)
-            # a_star_for_tsp(TSProblemLongestWayAndBack(g), index)
+            a_star_for_tsp(TSProblemLongestWayAndBack(g), index)
             # a_star_for_tsp(TSProblemSP(g), index)
             # a_star_for_tsp(TSProblemShortestEdges(g), index)
             # a_star_for_tsp(TSProblemMST(g), index)
-            draw_graph_from_result(cord, a_start_with_time(TSProblemMST(g), index))
-
-            draw_graph_from_result(cord, a_start_with_time(TSProblemMSTp2(g), index))
+            # draw_graph_from_result(cord, a_start_with_time(TSProblemMST(g), index))
+            # draw_graph_from_result(cord, a_start_with_time(TSProblemMSTp2(g), index))
+            simulated_annealing(TSPAnnealingProblem(g))
 
 
 

@@ -1,7 +1,14 @@
 import heapq
 import functools
+from random import random
+
 import numpy as np
 from typing import Tuple
+
+
+def probability(p):
+    """Return true with probability p."""
+    return p > random.uniform(0.0, 1.0)
 
 
 def distance(a: Tuple[float, float], b: Tuple[float, float]) -> float:
