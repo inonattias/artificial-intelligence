@@ -1,3 +1,5 @@
+import time
+
 from typing import List, Tuple, Dict
 
 from gui import draw_graph
@@ -6,7 +8,7 @@ import os
 import errno
 from search import Graph, astar_search, Node
 from primMST import primMST
-from tsp import TSProblem
+from tsp import TSProblem, TSProblemMST, TSProblemSP, TSProblemShortestEdges, TSProblemLongestWayAndBack, TSProblemMSTp2
 
 number_of_files_to_run = 1
 input_prefix = 'Input/'
@@ -43,6 +45,27 @@ def write_results_to_file(output_file_path: str, path: Tuple[str]):
             f.write(node + '\n')
 
 
+def draw_graph_from_result(cord: List[Tuple[float, float]], result_node: Node):
+    path = [cord[int(label) - 1] for label in result_node.state[:-1]]
+    draw_graph(path, result_node.state[:-1])
+
+
+def a_start_with_time(tsp_problem: TSProblem, index: int) -> Node:
+    start = time.time()
+    res = a_star_for_tsp(tsp_problem, index)
+    end = time.time()
+    print("Time took:" + str(end - start))
+    return res
+
+
+def a_star_for_tsp(tsp_problem: TSProblem, index: int) -> Node:
+    result_node: Node = astar_search(tsp_problem, display=True)
+    print('Result for' + tsp_problem.h_name() + str(result_node.state))
+    print(result_node.path())
+    write_results_to_file(output_files_paths[index], result_node.state)
+    return result_node
+
+
 def main():
     for index, input_file_file_path in enumerate(input_files_paths[:number_of_files_to_run]):
         with open(input_file_file_path, 'r') as input_file:
@@ -52,15 +75,15 @@ def main():
                 cord.append((float(x), float(y)))
             g = create_graph_from_points(cord)
             print(g)
+            # res =a_star_for_tsp(TSProblemMSTp2(g), index)
+            # a_star_for_tsp(TSProblemLongestWayAndBack(g), index)
+            # a_star_for_tsp(TSProblemSP(g), index)
+            # a_star_for_tsp(TSProblemShortestEdges(g), index)
+            # a_star_for_tsp(TSProblemMST(g), index)
+            draw_graph_from_result(cord, a_start_with_time(TSProblemMST(g), index))
 
-            tsp = TSProblem(g)
-            result_node: Node = astar_search(tsp, display=True)
-            print(result_node.state)
-            print(result_node.path())
-            write_results_to_file(output_files_paths[index], result_node.state)
+            draw_graph_from_result(cord, a_start_with_time(TSProblemMSTp2(g), index))
 
-            path = [cord[int(label)-1] for label in result_node.state[:-1]]
-            draw_graph(path, result_node.state[:-1])
 
 
 if __name__ == '__main__':
