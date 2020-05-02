@@ -2,47 +2,88 @@ from tkinter import *
 from typing import Tuple, List
 
 
-def draw_graph(path: Tuple[Tuple[float, float]], labels: List[str]):
-    assert len(path) == len(labels)
-    factor = 3.0
-    adjusted_path = tuple([(e[0]*factor, e[1]*factor) for e in path])
+class Gui():
+    def __init__(self, path: Tuple[Tuple[float, float]], labels: List[str], algo_name: str):
+        assert len(path) == len(labels)
+        self.labels: List[str] = labels
+        self.root = Tk()
+        self.path: Tuple[Tuple[float, float]] = path
+        self.canvas_width: float = 0.0
+        self.canvas_height: float = 0.0
+        self.cord_locations: List[Tuple[float, float]] = list(path)
+        self.calculate_canvas_size()
 
-    root = Tk()
-    root.title("Map of path in Graph")
+        self.frame_select_cities = Frame(self.root)
+        self.frame_select_cities.grid(row=1)
+        self.frame_canvas = Frame(self.root)
+        self.frame_canvas.grid(row=2)
+        Label(self.root, text="Graph of TSP for " + algo_name, font="Times 13 bold").grid(row=0, columnspan=10)
 
-    width = 800
-    height = 400
-    margin = 3.0
-    y_label_margin = -5 * factor
-    label_margin = -4* factor
-    graph_map = Canvas(root, width=width, height=height)
-    graph_map.configure(scrollregion=(-400, -400, 200, 200))
+    def calculate_canvas_size(self):
+        """Width and height for canvas"""
 
+        minx, maxx = sys.maxsize, -1 * sys.maxsize
+        miny, maxy = sys.maxsize, -1 * sys.maxsize
 
-    graph_map.pack()
+        for cord in self.path:
+            minx = min(minx, cord[0])
+            maxx = max(maxx, cord[0])
+            miny = min(miny, cord[1])
+            maxy = max(maxy, cord[1])
+        if minx >=0:
+            minx = -1
+        if miny >= 0:
+            miny = -1
+        diff_x: float = maxx - minx
+        factor_x = (15.9 - diff_x / 10) if diff_x < 100 else 1
+        diff_y: float = maxy - miny
+        factor_y = (13 - diff_y / 10) if diff_y < 100 else 1
 
-    for index, node in enumerate(adjusted_path):
+        # New locations squeezed to fit inside the map of romania
+        for index, cor in enumerate(list(self.path)):
+            self.cord_locations[index] = (
+                (cor[0] * factor_x / 1.2) - minx * factor_x / 1.1 + 70, -cor[1] * factor_y / 1.2 + miny*factor_y/1.2 + 370)
 
-        if index == len(labels) - 1:
-            graph_map.create_line(node[0], node[1], adjusted_path[0][0], adjusted_path[0][1],
-                                  fill="red", width=3)
-        else:
-            graph_map.create_line(node[0], node[1], adjusted_path[index + 1][0], adjusted_path[index + 1][1],
-                                  fill="red", width=3)
+        print(self.cord_locations)
+        print(self.path)
+        print(minx)
+        print(miny)
+        canvas_width = (maxx - minx) + 600
+        canvas_height = (maxy - miny) + 400
 
-    for index, label in enumerate(labels):
-        label_coord = adjusted_path[index][0] - margin, adjusted_path[index][1] + margin, adjusted_path[index][0] + margin, adjusted_path[index][1] - margin
-        graph_map.create_text(adjusted_path[index][0]+ label_margin, adjusted_path[index][1] - y_label_margin, anchor=W, font="Purisa", text=label)
-        graph_map.create_oval(label_coord, fill="green")
+        self.canvas_width = canvas_width
+        self.canvas_height = canvas_height
 
+    def draw_graph(self):
+        margin = 3
+        adjusted_path = self.cord_locations
 
-    graph_map.pack()
+        self.root.title("Map of path in Graph")
 
-    root.mainloop()
+        graph_map = Canvas(self.root, width=self.canvas_width, height=self.canvas_height)
+        graph_map.grid(row=3, columnspan=10)
+
+        for index, node in enumerate(adjusted_path):
+
+            if index == len(self.labels) - 1:
+                graph_map.create_line(node[0], node[1], adjusted_path[0][0], adjusted_path[0][1],
+                                      fill="red", width=3)
+            else:
+                graph_map.create_line(node[0], node[1], adjusted_path[index + 1][0], adjusted_path[index + 1][1],
+                                      fill="red", width=3)
+
+        for index, label in enumerate(self.labels):
+            label_coord = adjusted_path[index][0] - margin, adjusted_path[index][1] + margin, adjusted_path[index][
+                0] + margin, adjusted_path[index][1] - margin
+            graph_map.create_text(adjusted_path[index][0] - 15, adjusted_path[index][1] - 10, anchor=W, font="Purisa 8",
+                                  text=label)
+            graph_map.create_oval(label_coord, fill="green")
+        self.root.mainloop()
 
 
 def _test():
-    draw_graph(((1, 1), (2, 1), (2, 2), (1, 2), (0.5, 1.5)), ['1', '3', '4', '6', '9'])
+    g = Gui(((0, 1), (2, 10), (2, 20), (1, 2), (14.5, 22.5)), ['1', '3', '4', '6', '9'], "TEST")
+    g.draw_graph()
 
 
 if __name__ == '__main__':
