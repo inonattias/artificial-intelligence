@@ -35,20 +35,20 @@ class Gui():
         if miny >= 0:
             miny = -1
         diff_x: float = maxx - minx
-        factor_x = (15.9 - diff_x / 10) if diff_x < 100 else 1
+        factor_x = (18.5 - diff_x / 10)
         diff_y: float = maxy - miny
-        factor_y = (13 - diff_y / 10) if diff_y < 100 else 1
+        factor_y = (15 - diff_y / 10)
 
         # New locations squeezed to fit inside the map of romania
         for index, cor in enumerate(list(self.path)):
             self.cord_locations[index] = (
-                (cor[0] * factor_x / 1.2) - minx * factor_x / 1.1 + 70, -cor[1] * factor_y / 1.2 + miny*factor_y/1.2 + 370)
+                (cor[0] * factor_x / 1.2) - minx * factor_x / 1.1 + 20, -cor[1] * factor_y / 1.2 + miny*factor_y/1.2 + 430)
 
         print(self.cord_locations)
         print(self.path)
         print(minx)
         print(miny)
-        canvas_width = (maxx - minx) + 600
+        canvas_width = (maxx - minx) + 630
         canvas_height = (maxy - miny) + 400
 
         self.canvas_width = canvas_width

@@ -6,14 +6,14 @@ from tspAnnealingProblem import TSPAnnealingProblem
 from utils import probability
 import numpy as np
 
-max_iter = 100000
+max_iter = 50000000
 
 
-def schedule_alpha(t0=1e10, alpha=0.996, limit=100000):
+def schedule_alpha(t0=1e10, alpha=0.996, limit=500000):
     return lambda t: ((t0 * np.power(alpha, t)) if t < limit else 0)
 
 
-def schedule_beta(t0=1e10, beta=10.0, limit=100000):
+def schedule_beta(t0=1e10, beta=10.0, limit=500000):
     return lambda t: ((t0 / (1 + beta * t)) if t < limit else 0)
 
 
